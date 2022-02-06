@@ -1,13 +1,20 @@
+<<<<<<< Updated upstream
+=======
+# flake8: noqa
+
+>>>>>>> Stashed changes
 from cereal import car
 from selfdrive.car import dbc_dict
 from selfdrive.config import Conversions as CV
 
 Ecu = car.CarParams.Ecu
 MIN_ACC_SPEED = 19. * CV.MPH_TO_MS
-PEDAL_TRANSITION = 10. * CV.MPH_TO_MS
 
+PEDAL_HYST_GAP = 3. * CV.MPH_TO_MS
+PEDAL_SCALE = 3.0
 
 class CarControllerParams:
+  ACCEL_HYST_GAP = 0.06  # don't change accel command for small oscilalitons within this value
   ACCEL_MAX = 1.5  # m/s2, lower than allowed 2.0 m/s2 for tuning reasons
   ACCEL_MIN = -3.5  # m/s2
 
@@ -22,7 +29,6 @@ class CAR:
   AVALON = "TOYOTA AVALON 2016"
   AVALON_2019 = "TOYOTA AVALON 2019"
   AVALONH_2019 = "TOYOTA AVALON HYBRID 2019"
-  AVALON_TSS2 = "TOYOTA AVALON 2022"
   CAMRY = "TOYOTA CAMRY 2018"
   CAMRYH = "TOYOTA CAMRY HYBRID 2018"
   CAMRY_TSS2 = "TOYOTA CAMRY 2021"  # TSS 2.5
@@ -163,23 +169,6 @@ FW_VERSIONS = {
     ],
     (Ecu.fwdCamera, 0x750, 0x6d): [
       b'8646F0702100\x00\x00\x00\x00',
-    ],
-  },
-  CAR.AVALON_TSS2: {
-    (Ecu.esp, 0x7b0, None): [
-      b'\x01F152607280\x00\x00\x00\x00\x00\x00',
-    ],
-    (Ecu.eps, 0x7a1, None): [
-      b'8965B41110\x00\x00\x00\x00\x00\x00',
-    ],
-    (Ecu.engine, 0x700, None): [
-      b'\x01896630742000\x00\x00\x00\x00',
-    ],
-    (Ecu.fwdRadar, 0x750, 0xf): [
-      b'\x018821F6201200\x00\x00\x00\x00',
-    ],
-    (Ecu.fwdCamera, 0x750, 0x6d): [
-      b'\x028646F4104100\x00\x00\x00\x008646G5301200\x00\x00\x00\x00',
     ],
   },
   CAR.CAMRY: {
@@ -360,15 +349,12 @@ FW_VERSIONS = {
       b'\x018966306Q5000\x00\x00\x00\x00',
       b'\x018966306T3100\x00\x00\x00\x00',
       b'\x018966306T3200\x00\x00\x00\x00',
-      b'\x018966306T4000\x00\x00\x00\x00',
       b'\x018966306T4100\x00\x00\x00\x00',
     ],
-    (Ecu.fwdRadar, 0x750, 0xf): [
+    (Ecu.fwdRadar, 0x750, 15): [
       b'\x018821F6201200\x00\x00\x00\x00',
     ],
-    (Ecu.fwdCamera, 0x750, 0x6d): [
-      b'\x028646F0602100\x00\x00\x00\x008646G5301200\x00\x00\x00\x00',
-      b'\x028646F0602200\x00\x00\x00\x008646G5301200\x00\x00\x00\x00',
+    (Ecu.fwdCamera, 0x750, 109): [
       b'\x028646F3305200\x00\x00\x00\x008646G5301200\x00\x00\x00\x00',
       b'\x028646F3305300\x00\x00\x00\x008646G5301200\x00\x00\x00\x00',
     ],
@@ -452,7 +438,6 @@ FW_VERSIONS = {
   },
   CAR.CHRH: {
     (Ecu.engine, 0x700, None): [
-      b'\x0289663F405100\x00\x00\x00\x008966A4703000\x00\x00\x00\x00',
       b'\x02896631013200\x00\x00\x00\x008966A4703000\x00\x00\x00\x00',
       b'\x0289663F405000\x00\x00\x00\x008966A4703000\x00\x00\x00\x00',
       b'\x0289663F418000\x00\x00\x00\x008966A4703000\x00\x00\x00\x00',
@@ -537,7 +522,7 @@ FW_VERSIONS = {
       b'8646F0201200\x00\x00\x00\x00',
     ],
   },
-  CAR.COROLLA_TSS2: {
+    CAR.COROLLA_TSS2: {
     (Ecu.engine, 0x700, None): [
       b'\x01896630ZG2000\x00\x00\x00\x00',
       b'\x01896630ZG5000\x00\x00\x00\x00',
@@ -577,6 +562,7 @@ FW_VERSIONS = {
       b'\x03312N6000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203402\x00\x00\x00\x00',
       b'\x03312N6100\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203302\x00\x00\x00\x00',
       b'\x03312N6100\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203402\x00\x00\x00\x00',
+      b'\x02312K4000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     (Ecu.eps, 0x7a1, None): [
       b'\x018965B12350\x00\x00\x00\x00\x00\x00',
@@ -588,6 +574,7 @@ FW_VERSIONS = {
       b'\x018965B1255000\x00\x00\x00\x00',
       b'8965B12361\x00\x00\x00\x00\x00\x00',
       b'8965B16011\x00\x00\x00\x00\x00\x00',
+      b'\x018965B12510\x00\x00\x00\x00\x00\x00'
     ],
     (Ecu.esp, 0x7b0, None): [
       b'\x01F152602280\x00\x00\x00\x00\x00\x00',
@@ -608,6 +595,7 @@ FW_VERSIONS = {
       b'\x01F152612B90\x00\x00\x00\x00\x00\x00',
       b'\x01F152612C00\x00\x00\x00\x00\x00\x00',
       b'F152602191\x00\x00\x00\x00\x00\x00',
+      b'\x01F152612862\x00\x00\x00\x00\x00\x00',
     ],
     (Ecu.fwdRadar, 0x750, 0xf): [
       b'\x018821F3301100\x00\x00\x00\x00',
@@ -627,6 +615,90 @@ FW_VERSIONS = {
       b'\x028646F1601100\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',
     ],
   },
+  # CAR.COROLLA_TSS2: {
+  #   (Ecu.engine, 0x700, None): [
+  #     b'\x01896630ZG2000\x00\x00\x00\x00',
+  #     b'\x01896630ZG5000\x00\x00\x00\x00',
+  #     b'\x01896630ZG5100\x00\x00\x00\x00',
+  #     b'\x01896630ZG5200\x00\x00\x00\x00',
+  #     b'\x01896630ZG5300\x00\x00\x00\x00',
+  #     b'\x01896630ZP2000\x00\x00\x00\x00',
+  #     b'\x01896630ZQ5000\x00\x00\x00\x00',
+  #     b'\x018966312L8000\x00\x00\x00\x00',
+  #     b'\x018966312M0000\x00\x00\x00\x00',
+  #     b'\x018966312M9000\x00\x00\x00\x00',
+  #     b'\x018966312P9000\x00\x00\x00\x00',
+  #     b'\x018966312P9100\x00\x00\x00\x00',
+  #     b'\x018966312P9200\x00\x00\x00\x00',
+  #     b'\x018966312P9300\x00\x00\x00\x00',
+  #     b'\x018966312Q2300\x00\x00\x00\x00',
+  #     b'\x018966312R0000\x00\x00\x00\x00',
+  #     b'\x018966312R0100\x00\x00\x00\x00',
+  #     b'\x018966312R1000\x00\x00\x00\x00',
+  #     b'\x018966312R1100\x00\x00\x00\x00',
+  #     b'\x018966312R3100\x00\x00\x00\x00',
+  #     b'\x018966312S5000\x00\x00\x00\x00',
+  #     b'\x018966312S7000\x00\x00\x00\x00',
+  #     b'\x018966312W3000\x00\x00\x00\x00',
+  #     b'\x018966312W9000\x00\x00\x00\x00',
+  #   ],
+  #   (Ecu.engine, 0x7e0, None): [
+  #     b'\x0230A11000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00',
+  #     b'\x0230ZN4000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00',
+  #     b'\x03312K7000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203402\x00\x00\x00\x00',
+  #     b'\x03312M3000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203402\x00\x00\x00\x00',
+  #     b'\x03312N6000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203202\x00\x00\x00\x00',
+  #     b'\x03312N6000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203302\x00\x00\x00\x00',
+  #     b'\x03312N6000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203402\x00\x00\x00\x00',
+  #     b'\x03312N6100\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203302\x00\x00\x00\x00',
+  #     b'\x03312N6100\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00895231203402\x00\x00\x00\x00',
+  #   ],
+  #   (Ecu.eps, 0x7a1, None): [
+  #     b'\x018965B12350\x00\x00\x00\x00\x00\x00',
+  #     b'\x018965B12470\x00\x00\x00\x00\x00\x00',
+  #     b'\x018965B12490\x00\x00\x00\x00\x00\x00',
+  #     b'\x018965B12500\x00\x00\x00\x00\x00\x00',
+  #     b'\x018965B12520\x00\x00\x00\x00\x00\x00',
+  #     b'\x018965B12530\x00\x00\x00\x00\x00\x00',
+  #     b'\x018965B1255000\x00\x00\x00\x00',
+  #     b'8965B12361\x00\x00\x00\x00\x00\x00',
+  #     b'8965B16011\x00\x00\x00\x00\x00\x00',
+  #   ],
+  #   (Ecu.esp, 0x7b0, None): [
+  #     b'\x01F152602280\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152602560\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152602590\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152602650\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F15260A050\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612641\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612651\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612B10\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612B51\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612B60\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612B61\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612B71\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612B90\x00\x00\x00\x00\x00\x00',
+  #     b'\x01F152612C00\x00\x00\x00\x00\x00\x00',
+  #     b'F152602191\x00\x00\x00\x00\x00\x00',
+  #   ],
+  #   (Ecu.fwdRadar, 0x750, 0xf): [
+  #     b'\x018821F3301100\x00\x00\x00\x00',
+  #     b'\x018821F3301200\x00\x00\x00\x00',
+  #     b'\x018821F3301300\x00\x00\x00\x00',
+  #     b'\x018821F3301400\x00\x00\x00\x00',
+  #   ],
+  #   (Ecu.fwdCamera, 0x750, 0x6d): [
+  #     b'\x028646F12010D0\x00\x00\x00\x008646G26011A0\x00\x00\x00\x00',
+  #     b'\x028646F1201100\x00\x00\x00\x008646G26011A0\x00\x00\x00\x00',
+  #     b'\x028646F1201200\x00\x00\x00\x008646G26011A0\x00\x00\x00\x00',
+  #     b'\x028646F1201300\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',
+  #     b'\x028646F1201400\x00\x00\x00\x008646G2601500\x00\x00\x00\x00',
+  #     b'\x028646F1202000\x00\x00\x00\x008646G2601200\x00\x00\x00\x00',
+  #     b'\x028646F1202100\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',
+  #     b'\x028646F1202200\x00\x00\x00\x008646G2601500\x00\x00\x00\x00',
+  #     b'\x028646F1601100\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',
+  #   ],
+  # },
   CAR.COROLLAH_TSS2: {
     (Ecu.engine, 0x700, None): [
       b'\x01896630ZJ1000\x00\x00\x00\x00',
@@ -695,7 +767,6 @@ FW_VERSIONS = {
       b'\x028646F1202000\x00\x00\x00\x008646G2601200\x00\x00\x00\x00',
       b'\x028646F1202100\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',
       b'\x028646F1202200\x00\x00\x00\x008646G2601500\x00\x00\x00\x00',
-      b"\x028646F1601300\x00\x00\x00\x008646G2601400\x00\x00\x00\x00",
       b'\x028646F4203400\x00\x00\x00\x008646G2601200\x00\x00\x00\x00',
       b'\x028646F76020C0\x00\x00\x00\x008646G26011A0\x00\x00\x00\x00',
       b'\x028646F7603100\x00\x00\x00\x008646G2601200\x00\x00\x00\x00',
@@ -790,7 +861,6 @@ FW_VERSIONS = {
       b'\x01896630EB2100\x00\x00\x00\x00',
       b'\x01896630EB2200\x00\x00\x00\x00',
       b'\x01896630EC4000\x00\x00\x00\x00',
-      b'\x01896630ED9000\x00\x00\x00\x00',
       b'\x01896630EE1000\x00\x00\x00\x00',
     ],
     (Ecu.fwdRadar, 0x750, 0xf): [
@@ -811,18 +881,15 @@ FW_VERSIONS = {
       b'\x01F15264872300\x00\x00\x00\x00',
       b'\x01F15264872400\x00\x00\x00\x00',
       b'\x01F15264872500\x00\x00\x00\x00',
-      b'\x01F15264873500\x00\x00\x00\x00',
       b'\x01F152648C6300\x00\x00\x00\x00',
     ],
     (Ecu.engine, 0x700, None): [
-      b'\x01896630E67000\x00\x00\x00\x00',
       b'\x01896630EA1000\x00\x00\x00\x00',
       b'\x01896630EE4000\x00\x00\x00\x00',
       b'\x01896630EA1000\x00\x00\x00\x00897CF4801001\x00\x00\x00\x00',
       b'\x02896630E66000\x00\x00\x00\x00897CF4801001\x00\x00\x00\x00',
       b'\x02896630EB3000\x00\x00\x00\x00897CF4801001\x00\x00\x00\x00',
       b'\x02896630EB3100\x00\x00\x00\x00897CF4801001\x00\x00\x00\x00',
-      b'\x02896630E66100\x00\x00\x00\x00897CF4801001\x00\x00\x00\x00',
     ],
     (Ecu.fwdRadar, 0x750, 0xf): [
       b'\x018821F3301400\x00\x00\x00\x00',
@@ -835,7 +902,6 @@ FW_VERSIONS = {
   },
   CAR.LEXUS_IS: {
     (Ecu.engine, 0x700, None): [
-      b'\x018966353M7000\x00\x00\x00\x00',
       b'\x018966353M7100\x00\x00\x00\x00',
       b'\x018966353Q2000\x00\x00\x00\x00',
       b'\x018966353Q2300\x00\x00\x00\x00',
@@ -850,7 +916,6 @@ FW_VERSIONS = {
       b'\x02353P9000\x00\x00\x00\x00\x00\x00\x00\x00553C1000\x00\x00\x00\x00\x00\x00\x00\x00',
     ],
     (Ecu.esp, 0x7b0, None): [
-      b'F152653300\x00\x00\x00\x00\x00\x00',
       b'F152653301\x00\x00\x00\x00\x00\x00',
       b'F152653310\x00\x00\x00\x00\x00\x00',
       b'F152653330\x00\x00\x00\x00\x00\x00',
@@ -873,10 +938,9 @@ FW_VERSIONS = {
       b'8821F4702100\x00\x00\x00\x00',
     ],
     (Ecu.fwdCamera, 0x750, 0x6d): [
-      b'8646F5301101\x00\x00\x00\x00',
-      b'8646F5301200\x00\x00\x00\x00',
       b'8646F5301300\x00\x00\x00\x00',
       b'8646F5301400\x00\x00\x00\x00',
+      b'8646F5301200\x00\x00\x00\x00',
     ],
   },
   CAR.PRIUS: {
@@ -1194,7 +1258,6 @@ FW_VERSIONS = {
       b'\x01896630851000\x00\x00\x00\x00',
       b'\x01896630851100\x00\x00\x00\x00',
       b'\x01896630851200\x00\x00\x00\x00',
-      b'\x01896630852000\x00\x00\x00\x00',
       b'\x01896630852100\x00\x00\x00\x00',
       b'\x01896630859000\x00\x00\x00\x00',
       b'\x01896630860000\x00\x00\x00\x00',
@@ -1242,18 +1305,15 @@ FW_VERSIONS = {
       b'\x018966333T5000\x00\x00\x00\x00',
       b'\x018966333T5100\x00\x00\x00\x00',
       b'\x018966333X6000\x00\x00\x00\x00',
-      b'\x01896633T07000\x00\x00\x00\x00',
     ],
     (Ecu.esp, 0x7b0, None): [
       b'\x01F152606281\x00\x00\x00\x00\x00\x00',
       b'\x01F152606340\x00\x00\x00\x00\x00\x00',
-      b'\x01F152606461\x00\x00\x00\x00\x00\x00',
       b'\x01F15260E031\x00\x00\x00\x00\x00\x00',
     ],
     (Ecu.eps, 0x7a1, None): [
       b'8965B33252\x00\x00\x00\x00\x00\x00',
       b'8965B33590\x00\x00\x00\x00\x00\x00',
-      b'8965B33690\x00\x00\x00\x00\x00\x00',
       b'8965B48271\x00\x00\x00\x00\x00\x00',
     ],
     (Ecu.fwdRadar, 0x750, 0xf): [
@@ -1265,7 +1325,6 @@ FW_VERSIONS = {
       b'\x028646F33030D0\x00\x00\x00\x008646G26011A0\x00\x00\x00\x00',
       b'\x028646F3303200\x00\x00\x00\x008646G26011A0\x00\x00\x00\x00',
       b'\x028646F3304100\x00\x00\x00\x008646G2601200\x00\x00\x00\x00',
-      b'\x028646F3304300\x00\x00\x00\x008646G2601500\x00\x00\x00\x00',
       b'\x028646F4810200\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',
     ],
   },
@@ -1330,7 +1389,6 @@ FW_VERSIONS = {
       b'\x01896637851000\x00\x00\x00\x00',
       b'\x01896637852000\x00\x00\x00\x00',
       b'\x01896637854000\x00\x00\x00\x00',
-      b'\x01896637878000\x00\x00\x00\x00',
     ],
     (Ecu.esp, 0x7b0, None): [
       b'F152678130\x00\x00\x00\x00\x00\x00',
@@ -1338,7 +1396,6 @@ FW_VERSIONS = {
     ],
     (Ecu.dsu, 0x791, None): [
       b'881517803100\x00\x00\x00\x00',
-      b'881517803300\x00\x00\x00\x00',
     ],
     (Ecu.eps, 0x7a1, None): [
       b'8965B78060\x00\x00\x00\x00\x00\x00',
@@ -1350,7 +1407,6 @@ FW_VERSIONS = {
     ],
     (Ecu.fwdCamera, 0x750, 0x6d): [
       b'8646F7801100\x00\x00\x00\x00',
-      b'8646F7801300\x00\x00\x00\x00',
     ],
   },
   CAR.LEXUS_NX_TSS2: {
@@ -1434,7 +1490,6 @@ FW_VERSIONS = {
       b'\x01896630E41200\x00\x00\x00\x00',
       b'\x01896630E41500\x00\x00\x00\x00',
       b'\x01896630EA3100\x00\x00\x00\x00',
-      b'\x01896630EA3400\x00\x00\x00\x00',
       b'\x01896630EA4100\x00\x00\x00\x00',
       b'\x01896630EA4300\x00\x00\x00\x00',
       b'\x01896630EA4400\x00\x00\x00\x00',
@@ -1578,7 +1633,6 @@ FW_VERSIONS = {
   },
   CAR.PRIUS_TSS2: {
     (Ecu.engine, 0x700, None): [
-      b'\x028966347B1000\x00\x00\x00\x008966A4703000\x00\x00\x00\x00',
       b'\x028966347C6000\x00\x00\x00\x008966A4703000\x00\x00\x00\x00',
       b'\x028966347C8000\x00\x00\x00\x008966A4703000\x00\x00\x00\x00',
       b'\x038966347C0000\x00\x00\x00\x008966A4703000\x00\x00\x00\x00897CF4710101\x00\x00\x00\x00',
@@ -1591,7 +1645,6 @@ FW_VERSIONS = {
       b'F152647510\x00\x00\x00\x00\x00\x00',
       b'F152647520\x00\x00\x00\x00\x00\x00',
       b'F152647521\x00\x00\x00\x00\x00\x00',
-      b'F152647531\x00\x00\x00\x00\x00\x00',
     ],
     (Ecu.eps, 0x7a1, None): [
       b'8965B47070\x00\x00\x00\x00\x00\x00',
@@ -1612,40 +1665,38 @@ FW_VERSIONS = {
     (Ecu.fwdCamera, 0x750, 0x6d): [b'\x028646F6201400\x00\x00\x00\x008646G5301200\x00\x00\x00\x00',],
   },
   CAR.ALPHARD_TSS2: {
-    (Ecu.engine, 0x7e0, None): [
-      b'\x0235870000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00',
-      b'\x0235883000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00',
-    ],
-    (Ecu.eps, 0x7a1, None): [
-      b'8965B58040\x00\x00\x00\x00\x00\x00',
-      b'8965B58052\x00\x00\x00\x00\x00\x00',
-    ],
-    (Ecu.fwdRadar, 0x750, 0xf): [
-      b'\x018821F3301200\x00\x00\x00\x00',
-      b'\x018821F3301400\x00\x00\x00\x00',
-    ],
-    (Ecu.fwdCamera, 0x750, 0x6d): [
-      b'\x028646F58010C0\x00\x00\x00\x008646G26011A0\x00\x00\x00\x00',
-      b'\x028646F5803200\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',
-    ],
+    (Ecu.engine, 0x7e0, None): [b'\x0235883000\x00\x00\x00\x00\x00\x00\x00\x00A0202000\x00\x00\x00\x00\x00\x00\x00\x00',],
+    (Ecu.eps, 0x7a1, None): [b'8965B58040\x00\x00\x00\x00\x00\x00',],
+    (Ecu.fwdRadar, 0x750, 0xf): [b'\x018821F3301400\x00\x00\x00\x00',],
+    (Ecu.fwdCamera, 0x750, 0x6d): [b'\x028646F5803200\x00\x00\x00\x008646G2601400\x00\x00\x00\x00',],
   },
 }
 
 STEER_THRESHOLD = 100
 
 DBC = {
+<<<<<<< Updated upstream
   CAR.RAV4H: dbc_dict('toyota_tssp_hybrid_generated', 'toyota_adas'),
+=======
+  CAR.RAV4H: dbc_dict('toyota_rav4_hybrid_2017_pt_generated', 'toyota_adas'),
+>>>>>>> Stashed changes
   CAR.RAV4: dbc_dict('toyota_rav4_2017_pt_generated', 'toyota_adas'),
   CAR.PRIUS: dbc_dict('toyota_prius_2017_pt_generated', 'toyota_adas'),
   CAR.COROLLA: dbc_dict('toyota_corolla_2017_pt_generated', 'toyota_adas'),
   CAR.LEXUS_RC: dbc_dict('lexus_is_2018_pt_generated', 'toyota_adas'),
+<<<<<<< Updated upstream
   CAR.LEXUS_RX: dbc_dict('toyota_tssp_pt_generated', 'toyota_adas'),
   CAR.LEXUS_RXH: dbc_dict('toyota_tssp_hybrid_generated', 'toyota_adas'),
+=======
+  CAR.LEXUS_RX: dbc_dict('lexus_rx_350_2016_pt_generated', 'toyota_adas'),
+  CAR.LEXUS_RXH: dbc_dict('lexus_rx_hybrid_2017_pt_generated', 'toyota_adas'),
+>>>>>>> Stashed changes
   CAR.LEXUS_RX_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
   CAR.LEXUS_RXH_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
   CAR.CHR: dbc_dict('toyota_nodsu_pt_generated', 'toyota_adas'),
   CAR.CHRH: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_adas'),
   CAR.CAMRY: dbc_dict('toyota_nodsu_pt_generated', 'toyota_adas'),
+<<<<<<< Updated upstream
   CAR.CAMRYH: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_adas'),
   CAR.CAMRY_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
   CAR.CAMRYH_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
@@ -1657,18 +1708,39 @@ DBC = {
   CAR.AVALON_2019: dbc_dict('toyota_nodsu_pt_generated', 'toyota_adas'),
   CAR.AVALONH_2019: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_adas'),
   CAR.AVALON_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
+=======
+  CAR.CAMRYH: dbc_dict('toyota_camry_hybrid_2018_pt_generated', 'toyota_adas'),
+  CAR.CAMRY_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
+  CAR.CAMRYH_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
+  CAR.HIGHLANDER: dbc_dict('toyota_highlander_2017_pt_generated', 'toyota_adas'),
+  CAR.HIGHLANDER_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
+  CAR.HIGHLANDERH: dbc_dict('toyota_highlander_hybrid_2018_pt_generated', 'toyota_adas'),
+  CAR.HIGHLANDERH_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
+  CAR.AVALON: dbc_dict('toyota_avalon_2017_pt_generated', 'toyota_adas'),
+  CAR.AVALON_2019: dbc_dict('toyota_nodsu_pt_generated', 'toyota_adas'),
+  CAR.AVALONH_2019: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_adas'),
+>>>>>>> Stashed changes
   CAR.RAV4_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
   CAR.COROLLA_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
   CAR.COROLLAH_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
   CAR.LEXUS_ES_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
   CAR.LEXUS_ESH_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
   CAR.LEXUS_ESH: dbc_dict('lexus_ct200h_2018_pt_generated', 'toyota_adas'),
+<<<<<<< Updated upstream
   CAR.SIENNA: dbc_dict('toyota_tssp_pt_generated', 'toyota_adas'),
   CAR.LEXUS_IS: dbc_dict('lexus_is_2018_pt_generated', 'toyota_adas'),
   CAR.LEXUS_CTH: dbc_dict('lexus_ct200h_2018_pt_generated', 'toyota_adas'),
   CAR.RAV4H_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
   CAR.LEXUS_NXH: dbc_dict('toyota_tssp_hybrid_generated', 'toyota_adas'),
   CAR.LEXUS_NX: dbc_dict('toyota_tssp_pt_generated', 'toyota_adas'),
+=======
+  CAR.SIENNA: dbc_dict('toyota_sienna_xle_2018_pt_generated', 'toyota_adas'),
+  CAR.LEXUS_IS: dbc_dict('lexus_is_2018_pt_generated', 'toyota_adas'),
+  CAR.LEXUS_CTH: dbc_dict('lexus_ct200h_2018_pt_generated', 'toyota_adas'),
+  CAR.RAV4H_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
+  CAR.LEXUS_NXH: dbc_dict('lexus_nx300h_2018_pt_generated', 'toyota_adas'),
+  CAR.LEXUS_NX: dbc_dict('lexus_nx300_2018_pt_generated', 'toyota_adas'),
+>>>>>>> Stashed changes
   CAR.LEXUS_NX_TSS2: dbc_dict('toyota_nodsu_pt_generated', 'toyota_tss2_adas'),
   CAR.PRIUS_TSS2: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
   CAR.MIRAI: dbc_dict('toyota_nodsu_hybrid_pt_generated', 'toyota_tss2_adas'),
@@ -1677,11 +1749,21 @@ DBC = {
 
 
 # Toyota/Lexus Safety Sense 2.0 and 2.5
+<<<<<<< Updated upstream
 TSS2_CAR = {CAR.RAV4_TSS2, CAR.COROLLA_TSS2, CAR.COROLLAH_TSS2, CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2,
                 CAR.LEXUS_RX_TSS2, CAR.LEXUS_RXH_TSS2, CAR.HIGHLANDER_TSS2, CAR.HIGHLANDERH_TSS2, CAR.PRIUS_TSS2, CAR.CAMRY_TSS2, CAR.CAMRYH_TSS2,
                 CAR.MIRAI, CAR.LEXUS_NX_TSS2, CAR.ALPHARD_TSS2, CAR.AVALON_TSS2}
+=======
+TSS2_CAR = set([CAR.RAV4_TSS2, CAR.COROLLA_TSS2, CAR.COROLLAH_TSS2, CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2, CAR.RAV4H_TSS2,
+                CAR.LEXUS_RX_TSS2, CAR.LEXUS_RXH_TSS2, CAR.HIGHLANDER_TSS2, CAR.HIGHLANDERH_TSS2, CAR.PRIUS_TSS2, CAR.CAMRY_TSS2, CAR.CAMRYH_TSS2,
+                CAR.MIRAI, CAR.LEXUS_NX_TSS2, CAR.ALPHARD_TSS2])
+>>>>>>> Stashed changes
 
-NO_DSU_CAR = TSS2_CAR | {CAR.CHR, CAR.CHRH, CAR.CAMRY, CAR.CAMRYH}
+NO_DSU_CAR = TSS2_CAR | set([CAR.CHR, CAR.CHRH, CAR.CAMRY, CAR.CAMRYH])
 
 # no resume button press required
+<<<<<<< Updated upstream
 NO_STOP_TIMER_CAR = TSS2_CAR | {CAR.RAV4H, CAR.HIGHLANDERH, CAR.HIGHLANDER, CAR.SIENNA, CAR.LEXUS_ESH}
+=======
+NO_STOP_TIMER_CAR = TSS2_CAR | set([CAR.RAV4H, CAR.HIGHLANDERH, CAR.HIGHLANDER, CAR.SIENNA, CAR.LEXUS_ESH])
+>>>>>>> Stashed changes
